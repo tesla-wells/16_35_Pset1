@@ -1,0 +1,5 @@
+/home/teslawells/16_35/16_35_Pset1/question/build/CMakeFiles/rebuild_cache.dir
+/home/teslawells/16_35/16_35_Pset1/question/build/CMakeFiles/edit_cache.dir
+/home/teslawells/16_35/16_35_Pset1/question/build/CMakeFiles/main.dir
+/home/teslawells/16_35/16_35_Pset1/question/build/CMakeFiles/test.dir
+/home/teslawells/16_35/16_35_Pset1/question/build/CMakeFiles/test_controller.dir

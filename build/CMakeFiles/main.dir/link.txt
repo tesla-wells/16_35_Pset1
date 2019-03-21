@@ -1,0 +1,1 @@
+/usr/bin/cc   -rdynamic CMakeFiles/main.dir/src/main.c.o CMakeFiles/main.dir/src/client.c.o CMakeFiles/main.dir/src/simulator.c.o CMakeFiles/main.dir/src/vehicle.c.o CMakeFiles/main.dir/src/controller.c.o CMakeFiles/main.dir/src/utils.c.o CMakeFiles/main.dir/src/validate.c.o  -o main -lm 
