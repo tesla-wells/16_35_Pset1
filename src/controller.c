@@ -12,42 +12,44 @@ control get_proportional_waypoint_control(struct t_vehicle * vehicle){
 	double opposite = vehicle->position[1] - vehicle->current_waypoint[1];
 	double adjacent = vehicle->position[0] - vehicle->current_waypoint[0];
 
-	double desiredAngle = atan(opposite/adjacent);
-	if(adjacent < 0){
-		if(opposite < 0){
-			desiredAngle = desiredAngle - M_PI;
-		} else {
-			desiredAngle = desiredAngle + M_PI;
-		}
-	}
+	double desiredAngle = atan2(opposite , adjacent);
 
 	double angleDifference = desiredAngle - vehicle->position[2];
 
 	if(angleDifference > M_PI){
-		angleDifference = -2*M_PI + M_PI;
+		angleDifference = angleDifference - 2*M_PI;
+	}
+	if(angleDifference < -M_PI){
+		angleDifference = angleDifference + 2*M_PI;
 	}
 
-	if(angleDifference >= M_PI/4){
+	if(angleDifference > M_PI/4){
 		angleDifference = M_PI/4 - 0.0001;
 	}
 
-	if(angleDifference < -M_PI/4){
-		angleDifference = -M_PI/4;
+	if(angleDifference <= -M_PI/4){
+		angleDifference = -M_PI/4 + 0.0001;
 	}
 
-	vehicleController.angular_velocity = angleDifference;
+	vehicleController.angular_velocity = -1 * angleDifference;
 
 	double distanceFromWaypoint = hypotenuse(vehicle->position, vehicle->current_waypoint);
 
 	if(angleDifference < 0.25268){
 		if(distanceFromWaypoint < 10){
-			vehicleController.speed = distanceFromWaypoint;
+			if(distanceFromWaypoint < 5.0){
+				vehicleController.speed = 5.1;
+			} else {
+				vehicleController.speed = distanceFromWaypoint;
+			}
 		} else {
-			vehicleController.speed = 10.0;
+			vehicleController.speed = 8.0;
 		}
 	} else {
-		vehicleController.speed = 5.0;
+		vehicleController.speed = 5.1;
 	}
+
+	printf("%f speed wanted, %f angle wanted \n", vehicleController.speed, vehicleController.angular_velocity);
 	
 	return vehicleController;
 //return an angular velocity and linear velocity for the vehicle to execute that obeys the vehicles bounds

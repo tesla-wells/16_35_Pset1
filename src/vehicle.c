@@ -4,6 +4,8 @@
 #include "../include/utils.h"
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 
 #define N_CONTROLLERS 1
 #define DEBUG_VEHICLE 1
@@ -42,30 +44,45 @@ void control_vehicle (struct t_vehicle * v){
 			 controlRecommends.speed * sin(v->position[2]),
 			 controlRecommends.angular_velocity};
 	set_velocity(v, equivValues);
+
 }
 
 void update_state (struct t_vehicle * v, double time){
 	double new_values[3] = {(v->position)[0] + (v->velocity)[0] * time,
 				(v->position)[1] + (v->velocity)[1] * time,
 				(v->position)[2] + (v->velocity)[2] * time};
+
+	printf("first velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
+	if(v->position[2] + v->velocity[2] * time > M_PI){
+		new_values[2] = new_values[2] - 2*M_PI;
+	}
+
+	printf("second velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
+	if(v->position[2] + v->velocity[2] * time < -M_PI){
+		new_values[2] = new_values[2] + 2*M_PI;
+	}
 	
+	printf("third velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(validatePosition(new_values) == 0){
 		set_position(v, new_values);
-		if(hypotenuse(v->position, v->current_waypoint) <= 5.0/2.0){
-			v->current_waypoint_idx++;
-			if(v->current_waypoint_idx >= v->num_waypoints){
-				v->current_waypoint_idx = 0;
-			}
-			v->current_waypoint = v->target_waypoints[v->current_waypoint_idx];
-		}	
 	}
+
+	float hold = hypotenuse(v->position, v->current_waypoint);
+	if( hold <= 5.0/2.0){
+		v->current_waypoint_idx++;
+		printf("%d new waypoint!", v->current_waypoint_idx);
+		if(v->current_waypoint_idx >= v->num_waypoints){
+			v->current_waypoint_idx = 0;
+		}
+		v->current_waypoint = v->target_waypoints[v->current_waypoint_idx];
+	}	
+	
 	
 }
 
 // create vehicle
 vehicle * create_vehicle(double * starting_position, int num_waypoints, double ** offset_waypoints){
 	vehicle* initVehicle = malloc(sizeof(vehicle));
-
 	set_position(initVehicle, starting_position);
 
 	double** adjusted_points = malloc(num_waypoints*sizeof(double[2]));
@@ -100,6 +117,8 @@ vehicle * create_vehicle(double * starting_position, int num_waypoints, double *
 	initVehicle->set_velocity = set_velocity;	
 	initVehicle->control_vehicle = control_vehicle;
 	initVehicle->update_state = update_state;
+
+	control_vehicle(initVehicle);
 
 	return initVehicle;
 

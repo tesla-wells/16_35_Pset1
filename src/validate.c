@@ -10,7 +10,7 @@ int validateInBounds(double x, double y){
 	//validate that x and y are [0, 100)
 	if(x < 0 || x >= 100 || y < 0 || y >= 100){
 		error = 1;
-		printf("%f, %f is out of bounds", x, y);
+		printf("%f, %f is out of bounds \n", x, y);
 	}
 	return error;
 }
@@ -22,7 +22,7 @@ int validateWaypoints(int num_waypoints, double** offset_waypoints){
 		for(int j=i+1; j < num_waypoints; j++){
 			if (offset_waypoints[i] == offset_waypoints[j]){
 				error = 1;
-				printf("You have a duplicate waypoint");
+				printf("You have a duplicate waypoint \n");
 			}
 		}
 	}
@@ -43,7 +43,7 @@ int validatePosition(double* values){
 	//validate that theta is [-pi, pi)
 	if(values[2] < -1 * M_PI || values[2] >= M_PI){
 		error = 1;
-		printf("Your angle position is out of bounds");
+		printf("Your angle position is out of bounds \n");
 	}
 	return error;
 }
@@ -53,13 +53,13 @@ int validateVelocity(double* values){
 	//validate that x and y together are < 10
 	double pointZero[3] = {0.0, 0.0, 0.0};
 	float velocity = hypotenuse(values, pointZero);
-	if(velocity < 5 || velocity < 10){
-		printf("your linear velocity is out of bounds");
+	if(velocity < 5 || velocity > 10){
+		printf("your linear velocity is out of bounds \n");
 		error = 1;
 	}
 	//validate that the theta velocity is < -pi/4 to pi/4
 	if(values[2] < M_PI / -4 || values[2] > M_PI / 4){
-		printf("You are turnin too fast");
+		printf("You are turnin too fast \n");
 		error = 1;
 	}
 	return error;
