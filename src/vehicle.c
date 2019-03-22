@@ -8,7 +8,6 @@
 
 
 #define N_CONTROLLERS 1
-#define DEBUG_VEHICLE 1
 
 control (*controllers[N_CONTROLLERS])(struct t_vehicle* v) = {
 	&get_proportional_waypoint_control
@@ -52,17 +51,14 @@ void update_state (struct t_vehicle * v, double time){
 				(v->position)[1] + (v->velocity)[1] * time,
 				(v->position)[2] + (v->velocity)[2] * time};
 
-	printf("first velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(v->position[2] + v->velocity[2] * time > M_PI){
 		new_values[2] = new_values[2] - 2*M_PI;
 	}
 
-	printf("second velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(v->position[2] + v->velocity[2] * time < -M_PI){
 		new_values[2] = new_values[2] + 2*M_PI;
 	}
 	
-	printf("third velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(validatePosition(new_values) == 0){
 		set_position(v, new_values);
 	}
@@ -70,7 +66,6 @@ void update_state (struct t_vehicle * v, double time){
 	float hold = hypotenuse(v->position, v->current_waypoint);
 	if( hold <= 5.0/2.0){
 		v->current_waypoint_idx++;
-		printf("%d new waypoint!", v->current_waypoint_idx);
 		if(v->current_waypoint_idx >= v->num_waypoints){
 			v->current_waypoint_idx = 0;
 		}

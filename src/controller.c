@@ -49,8 +49,6 @@ control get_proportional_waypoint_control(struct t_vehicle * vehicle){
 		vehicleController.speed = 5.1;
 	}
 
-	printf("%f speed wanted, %f angle wanted \n", vehicleController.speed, vehicleController.angular_velocity);
-	
 	return vehicleController;
 //return an angular velocity and linear velocity for the vehicle to execute that obeys the vehicles bounds
 //
