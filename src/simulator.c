@@ -68,6 +68,10 @@ void runThreaded(struct t_simulator * sim){
 		pthread_create(&thread_list[i], NULL, vehicle_thread, (void*) &vehicle_thread_inputs[i]); 
 	}
 
+	for(int i=0; i < sim->n_vehicles; i++){
+		pthread_join(thread_list[i], NULL);
+	}
+
 	numberOfIterations++;
         sim->current_time += sim->time_increment;
         usleep(sim->time_increment*1e6); // sleep for roughly the time increment so we get quasi-realtime behavior
