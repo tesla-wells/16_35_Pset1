@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         vehicle * vehicle = create_vehicle(pos, sim->num_waypoints, sim->offset_waypoints);
         // creates a copy so we can free the original vehicle after
         sim->vehicles[i] = *vehicle;
-        free(vehicle);
+//        free(vehicle);
     }
     sim->run(sim);
     printf("press any key to kill the program\n");

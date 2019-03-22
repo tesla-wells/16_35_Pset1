@@ -1,5 +1,5 @@
 #include <math.h>
-#include "utils.h"
+#include "../include/utils.h"
 
 double hypotenuse(double* pointA, double* pointB){
 	float legA = pointA[0] - pointB[0];
