@@ -28,8 +28,18 @@ int main(int argc, char *argv[])
         sim->vehicles[i] = *vehicle;
 //        free(vehicle);
     }
-    sim->run(sim);
-    printf("press any key to kill the program\n");
-    getchar();
-    close_display_server();
+	int threaded = 0;
+    for(int i = 1; i < argc; i++){
+	if(strcmp(argv[i], "-t") == 0|| strcmp(argv[i], "--threaded") == 0){
+		threaded = 1;
+	} 
+    }
+   if(threaded){
+	sim->runThreaded(sim);
+   } else {
+	sim->run(sim);
+   }
+   printf("press any key to kill the program\n");
+   getchar();
+   close_display_server();
 }

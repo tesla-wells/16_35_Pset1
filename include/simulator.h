@@ -15,8 +15,14 @@ typedef struct t_simulator{
     double ** offset_waypoints;
     double turn_rate;
     void (*run)(struct t_simulator*);
+    void (*runThreaded)(struct t_simulator*);
     control (*get_control)(struct t_simulator*,double);
 } simulator;
+
+typedef struct{
+    vehicle* spec_vehicle;
+    simulator* parent_sim;
+} vehicle_plus;
 
 simulator * create_simulator();
 void run(struct t_simulator * sim);

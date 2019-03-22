@@ -23,7 +23,7 @@ add_definitions(-DPORTNUM=1635 -DIP="127.0.0.1")
 
 # create the executable
 add_executable(main src/main.c ${SimulatorFiles})
-target_link_libraries(main m)
+target_link_libraries(main m pthread)
 
 # note that we would normally create a library for the simulator files and
 # link our tests and main function against that. for this assignment, to keep
