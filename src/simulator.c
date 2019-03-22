@@ -41,6 +41,7 @@ void* vehicle_thread(void* args){
 	inputs = (vehicle_plus*) args;
 	inputs->spec_vehicle->control_vehicle(inputs->spec_vehicle);
 	inputs->spec_vehicle->update_state(inputs->spec_vehicle, inputs->parent_sim->time_increment);
+	return 0;
 }
 
 void runThreaded(struct t_simulator * sim){
@@ -67,12 +68,13 @@ void runThreaded(struct t_simulator * sim){
 		pthread_create(&thread_list[i], NULL, vehicle_thread, (void*) &vehicle_thread_inputs[i]); 
 	}
 
-
+	numberOfIterations++;
+        sim->current_time += sim->time_increment;
         usleep(sim->time_increment*1e6); // sleep for roughly the time increment so we get quasi-realtime behavior
     }
 	stop = clock();
     float totalSeconds = stop - start; 
-    printf("\n The full runtime was %f seconds, and the average runtime was %f", totalSeconds, totalSeconds/numberOfIterations); 
+    printf("\n The full runtime was %f milliseconds, and the average runtime was %f milliseconds.", totalSeconds, totalSeconds/numberOfIterations); 
    close_server();
 }
 
