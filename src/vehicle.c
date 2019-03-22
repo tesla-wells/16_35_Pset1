@@ -15,43 +15,6 @@ control (*controllers[N_CONTROLLERS])(struct t_vehicle* v) = {
 int controller_idx = 0; 
 
 
-// create vehicle
-vehicle * create_vehicle(double * starting_position, int num_waypoints, double ** offset_waypoints){
-	vehicle* initVehicle = malloc(sizeof(vehicle));
-
-	set_position(initVehicle, starting_position);
-
-	double** adjusted_points = malloc(num_waypoints*sizeof(double[2]));
-	
-	for(int i = 0; i < num_waypoints; i++){
-		adjusted_points[i] = malloc(sizeof(double[2]));
-		adjusted_points[i][0] = offset_waypoints[i][0] + starting_position[0];
-		adjusted_points[i][1] = offset_waypoints[i][1] + starting_position[1];
-	
-	}
-
-	if(validateWaypoints(num_waypoints, adjusted_points) == 0){
-		initVehicle->num_waypoints = num_waypoints;
-		initVehicle->target_waypoints = adjusted_points;
-	}
-	//Find the closest waypoint and assign that as your first stop
-	float shortestDistance = INFINITY;
-
-	//This isn't defined in the requirements but seems obvious. You might need to comment it out and assign the first one as the location
-	for(int i = 0; i < num_waypoints; i++){
-		double hold = hypotenuse(adjusted_points[i], starting_position);
-		if (hold < shortestDistance){
-			shortestDistance = hold;
-			initVehicle->current_waypoint = adjusted_points[i];
-			initVehicle->current_waypoint_idx = i;
-		}
-	}
-
-	controller_idx = 0;	
-
-	return initVehicle;
-
-}
 
 void set_position   (struct t_vehicle * v,double * values){
 	// x and y Must be in the range from [0,100)
@@ -97,4 +60,47 @@ void update_state (struct t_vehicle * v, double time){
 		}	
 	}
 	
+}
+
+// create vehicle
+vehicle * create_vehicle(double * starting_position, int num_waypoints, double ** offset_waypoints){
+	vehicle* initVehicle = malloc(sizeof(vehicle));
+
+	set_position(initVehicle, starting_position);
+
+	double** adjusted_points = malloc(num_waypoints*sizeof(double[2]));
+	
+	for(int i = 0; i < num_waypoints; i++){
+		adjusted_points[i] = malloc(sizeof(double[2]));
+		adjusted_points[i][0] = offset_waypoints[i][0] + starting_position[0];
+		adjusted_points[i][1] = offset_waypoints[i][1] + starting_position[1];
+	
+	}
+
+	if(validateWaypoints(num_waypoints, adjusted_points) == 0){
+		initVehicle->num_waypoints = num_waypoints;
+		initVehicle->target_waypoints = adjusted_points;
+	}
+	//Find the closest waypoint and assign that as your first stop
+	float shortestDistance = INFINITY;
+
+	//This isn't defined in the requirements but seems obvious. You might need to comment it out and assign the first one as the location
+	for(int i = 0; i < num_waypoints; i++){
+		double hold = hypotenuse(adjusted_points[i], starting_position);
+		if (hold < shortestDistance){
+			shortestDistance = hold;
+			initVehicle->current_waypoint = adjusted_points[i];
+			initVehicle->current_waypoint_idx = i;
+		}
+	}
+
+	controller_idx = 0;	
+	
+	initVehicle->set_position = set_position;
+	initVehicle->set_velocity = set_velocity;	
+	initVehicle->control_vehicle = control_vehicle;
+	initVehicle->update_state = update_state;
+
+	return initVehicle;
+
 }
