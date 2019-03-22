@@ -35,5 +35,9 @@ enable_testing() # enables the CTEST framework
 add_executable(test_controller tests/test_controller.c ${SimulatorFiles})
 target_link_libraries(test_controller m)
 ## this created the executable, now lets add a test
-add_test(TestController1 test_controller fail) # should fail
-add_test(TestController2 test_controller pass) # should pass
+add_test(TestController1 test_controller control1) # should pass
+add_test(TestController2 test_controller control2) # should pass
+add_test(TestController3 test_controller control3) # should pass
+add_test(TestUpdate1 test_controller update1 # should pass
+add_test(TestUpdate2 test_controller update2) # should pass
+add_test(TestUpdate3 test_controller update3 # should pass
