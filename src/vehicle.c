@@ -6,8 +6,8 @@
 
 
 #define N_CONTROLLERS 1
-#define DEBUG_VEHICLE 1
 
+//This value is normally in a utils file but is here for reasons explained in controller.c
 double hypotenuse(double* pointA, double* pointB){
 	float legA = pointA[0] - pointB[0];
 	float legB = pointA[1] - pointB[1];
@@ -15,6 +15,8 @@ double hypotenuse(double* pointA, double* pointB){
 	return finalVal; 
 }
 
+
+//Validation functions go up here but would normally be separated out into their won validate.c file. See my github repo for proper structuring.
 int validateInBounds(double x, double y){
 	int error = 0;
 	//validate that x and y are [0, 100)
@@ -74,10 +76,12 @@ int validateVelocity(double* values){
 	}
 	return error;
 }
+
+
+//Set up the controller struct here-- but ideally could go somewhere else?
 control (*controllers[N_CONTROLLERS])(struct t_vehicle* v) = {
 	&get_proportional_waypoint_control
 };
-
 int controller_idx = 0; 
 
 
