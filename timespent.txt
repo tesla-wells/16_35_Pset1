@@ -1,0 +1,6 @@
+I spent about 24 hours on problem 1
+I spent about 2 hours on unit testing
+I spent about 4 hours on threading
+I spent 0 hours on advanced threading
+I spent 0 hours learning git (I already knew it and was committing messages)
+
