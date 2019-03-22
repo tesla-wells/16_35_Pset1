@@ -1,9 +1,14 @@
 #include "../include/vehicle.h"
 #include "../include/controller.h"
-#include "../include/utils.h"
 #include <math.h>
 #include <stdio.h>
 
+double hypo(double* pointA, double* pointB){
+	float legA = pointA[0] - pointB[0];
+	float legB = pointA[1] - pointB[1];
+	float finalVal = sqrt(powf(legA, 2) + powf(legB, 2));
+	return finalVal; 
+}
 // List a bunch of possible controller functions here that, given a vehicle, returns a control.
 control get_proportional_waypoint_control(struct t_vehicle * vehicle){
 
@@ -33,7 +38,7 @@ control get_proportional_waypoint_control(struct t_vehicle * vehicle){
 
 	vehicleController.angular_velocity = -1 * angleDifference;
 
-	double distanceFromWaypoint = hypotenuse(vehicle->position, vehicle->current_waypoint);
+	double distanceFromWaypoint = hypo(vehicle->position, vehicle->current_waypoint);
 
 	if(angleDifference < 0.25268){
 		if(distanceFromWaypoint < 10){
@@ -49,7 +54,7 @@ control get_proportional_waypoint_control(struct t_vehicle * vehicle){
 		vehicleController.speed = 5.1;
 	}
 
-	printf("%f speed wanted, %f angle wanted \n", vehicleController.speed, vehicleController.angular_velocity);
+	//printf("%f speed wanted, %f angle wanted \n", vehicleController.speed, vehicleController.angular_velocity);
 	
 	return vehicleController;
 //return an angular velocity and linear velocity for the vehicle to execute that obeys the vehicles bounds

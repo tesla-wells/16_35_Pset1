@@ -1,7 +1,5 @@
 #include "../include/vehicle.h"
 #include "../include/controller.h"
-#include "../include/validate.h"
-#include "../include/utils.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -10,6 +8,72 @@
 #define N_CONTROLLERS 1
 #define DEBUG_VEHICLE 1
 
+double hypotenuse(double* pointA, double* pointB){
+	float legA = pointA[0] - pointB[0];
+	float legB = pointA[1] - pointB[1];
+	float finalVal = sqrt(powf(legA, 2) + powf(legB, 2));
+	return finalVal; 
+}
+
+int validateInBounds(double x, double y){
+	int error = 0;
+	//validate that x and y are [0, 100)
+	if(x < 0 || x >= 100 || y < 0 || y >= 100){
+		error = 1;
+		printf("%f, %f is out of bounds \n", x, y);
+	}
+	return error;
+}
+
+int validateWaypoints(int num_waypoints, double** offset_waypoints){
+	int error = 0;
+	//Validate that there are no duplicate waypoints
+	for(int i=0; i < num_waypoints - 1; i++){
+		for(int j=i+1; j < num_waypoints; j++){
+			if (offset_waypoints[i] == offset_waypoints[j]){
+				error = 1;
+				printf("You have a duplicate waypoint \n");
+			}
+		}
+	}
+	//validate that all waypoints are within bounds
+	for(int i=0; i < num_waypoints; i++){
+		error = (error ||validateInBounds(offset_waypoints[i][0], offset_waypoints[i][1]));
+	}
+	
+	
+	//Bonus: Validate if the program given the constraints can attain each waypoint
+	return error;
+}
+
+int validatePosition(double* values){
+	int error = 0;
+	
+	error = validateInBounds(values[0], values[1]); 
+	//validate that theta is [-pi, pi)
+	if(values[2] < -1 * M_PI || values[2] >= M_PI){
+		error = 1;
+		printf("Your angle position is out of bounds \n");
+	}
+	return error;
+}
+
+int validateVelocity(double* values){
+	int error = 0;
+	//validate that x and y together are < 10
+	double pointZero[3] = {0.0, 0.0, 0.0};
+	float velocity = hypotenuse(values, pointZero);
+	if(velocity < 5 || velocity > 10){
+		printf("your linear velocity is out of bounds \n");
+		error = 1;
+	}
+	//validate that the theta velocity is < -pi/4 to pi/4
+	if(values[2] < M_PI / -4 || values[2] > M_PI / 4){
+		printf("You are turnin too fast \n");
+		error = 1;
+	}
+	return error;
+}
 control (*controllers[N_CONTROLLERS])(struct t_vehicle* v) = {
 	&get_proportional_waypoint_control
 };
@@ -52,17 +116,17 @@ void update_state (struct t_vehicle * v, double time){
 				(v->position)[1] + (v->velocity)[1] * time,
 				(v->position)[2] + (v->velocity)[2] * time};
 
-	printf("first velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
+	//printf("first velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(v->position[2] + v->velocity[2] * time > M_PI){
 		new_values[2] = new_values[2] - 2*M_PI;
 	}
 
-	printf("second velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
+	//printf("second velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(v->position[2] + v->velocity[2] * time < -M_PI){
 		new_values[2] = new_values[2] + 2*M_PI;
 	}
 	
-	printf("third velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
+	//printf("third velocity %f, %f, %f \n", new_values[0], new_values[1], new_values[2]);
 	if(validatePosition(new_values) == 0){
 		set_position(v, new_values);
 	}

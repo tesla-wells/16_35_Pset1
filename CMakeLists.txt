@@ -10,14 +10,10 @@ list(APPEND SimulatorFiles
 	include/simulator.h
 	include/controller.h
 	include/vehicle.h
-	include/utils.h
-	include/validate.h
 	src/client.c
 	src/simulator.c
 	src/vehicle.c
 	src/controller.c
-	src/utils.c
-	src/validate.c
 )
 add_definitions(-DPORTNUM=1635 -DIP="127.0.0.1")
 
