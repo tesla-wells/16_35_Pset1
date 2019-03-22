@@ -5,6 +5,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 simulator * create_simulator(){
     // initialization
     simulator * sim = malloc(sizeof(simulator));
@@ -24,13 +25,17 @@ simulator * create_simulator(){
         sim->offset_waypoints[i][1] = sim->radius * sin( i * 2 * M_PI / (sim->num_waypoints));
     }
     // simulator settings
-    sim->max_time = 100.0;
+    sim->max_time = 10.0;
     sim->current_time = 0.0;
     sim->time_increment = 0.01;
     return sim;
 }
 void run(struct t_simulator * sim){
     open_server(IP,PORTNUM);
+
+    time_t full_run_time = time(NULL);
+    int numberOfIterations = 0;
+
     sim->current_time = 0.0;
     double time_vehicle_message = 0.0;
     while (sim->current_time < sim->max_time) {
@@ -42,10 +47,13 @@ void run(struct t_simulator * sim){
             time_vehicle_message = 0.0;
         }
         for (vehicle * v = sim->vehicles; v < sim->vehicles + sim->n_vehicles; v++){
-            v->control_vehicle(v);
+            numberOfIterations++;
+	    v->control_vehicle(v);
             v->update_state(v,sim->time_increment); // delta t
         }
         usleep(sim->time_increment*1e6); // sleep for roughly the time increment so we get quasi-realtime behavior
     }
-    close_server();
+    int totalSeconds = time(NULL) - full_run_time; 
+    printf("\n The full runtime was %d seconds, and the average runtime was %d", totalSeconds, totalSeconds/numberOfIterations); 
+   close_server();
 }
